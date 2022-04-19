@@ -44,3 +44,16 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+dist_backup_20220419/.htaccess
+dist_backup_20220419/favicon.ico
+dist_backup_20220419/index.html
+dist_backup_20220419/main.js
+dist_backup_20220419/main.js.map
+dist_backup_20220419/polyfills.js
+dist_backup_20220419/polyfills.js.map
+dist_backup_20220419/runtime.js
+dist_backup_20220419/runtime.js.map
+dist_backup_20220419/styles.css
+dist_backup_20220419/styles.css.map
+dist_backup_20220419/vendor.js
+dist_backup_20220419/vendor.js.map
