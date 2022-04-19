@@ -1,0 +1,18 @@
+<h3 class="title ">
+    <span class="badge badge-yellow align-bottom">
+        #005
+    </span>
+    Drag & Drop JSON Schema Editor
+</h3><br/>
+<p>Text</p><br/>
+<div>
+<list-item [item]="item"
+    [connectedDropListsIds]="connectedDropListsIds"
+    (itemDrop)="onDragDrop($event)"
+    (addItem)="onAddItem($event)"
+    (duplicateItem)="onDuplicateItem($event)"
+    (removeItem)="onRemoveItem($event)">
+</list-item>
+</div>
+<br/><br/><br/>
+  

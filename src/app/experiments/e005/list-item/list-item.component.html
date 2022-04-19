@@ -1,0 +1,93 @@
+<div cdkDropList
+    class="item-dropzone parent"
+    [id]="parentItemId"
+    [cdkDropListData]="parentItem"
+    [cdkDropListConnectedTo]="allDropListsIds"
+    (cdkDropListDropped)="onDragDrop($event)">
+    <div cdkDrag
+        [id]="item.uId"
+        [cdkDragData]="item"
+        [cdkDragDisabled]="dragDisabled">
+        <div title="Drag this item with children"
+            class="item-drag-handle d-flex justify-content-between align-items-center"
+            [ngClass]="item.itemType"
+            cdkDragHandle>
+            <div class="d-flex align-items-center">
+                <i *ngIf="item.itemType === 'string'"
+                    class="material-icons ml-auto">
+                    format_quote
+                </i>
+                <i *ngIf="item.itemType === 'number'"
+                    class="material-icons ml-auto">
+                    tag
+                </i>
+                <i *ngIf="item.itemType === 'object'"
+                    class="material-icons ml-auto">
+                    data_object
+                </i>
+                <i *ngIf="item.itemType === 'array'"
+                    class="material-icons ml-auto">
+                    data_array
+                </i>
+                <i *ngIf="item.itemType === 'boolean'"
+                    class="material-icons ml-auto">
+                    toggle_off
+                </i>
+                <input [(ngModel)]="item.name"
+                    class="input-name" 
+                    [size]="item.name.length - 1 || 1"
+                    [ngClass]="item.name.length == 0 ? 'input-name-warning' : ''">
+                <button class="btn-add" (click)="onAddItem(item)" *ngIf="item.itemType == 'object' || item.itemType == 'array'">
+                    <i *ngIf="!dragDisabled"
+                    class="material-icons">
+                    add_box
+                    </i>
+                </button>
+            </div>
+            <div class="d-flex align-items-center">
+                <label class="ml-5 mr-1 mb-0 align-middle">Type:</label>
+                <select class="mr-3" [(ngModel)]="item.itemType">
+                    <option *ngFor="let type of types" [ngValue]="type.value">
+                        <!-- TODO: keep from selecting string/number if this item has children -->
+                    {{type.viewValue}}
+                    </option>
+                </select>
+                <button class="btn-add" (click)="onDuplicateItem([parentItem, item])">
+                    <i *ngIf="!dragDisabled"
+                    class="material-icons">
+                    content_copy
+                    </i>
+                </button>
+                <button class="mr-2 btn-delete" (click)="onRemoveItem([parentItem, item])">
+                    <i *ngIf="!dragDisabled"
+                    class="material-icons mt-1">
+                    clear
+                    </i>
+                </button>
+            </div>
+        </div>
+        <div class="item-drag-preview"
+            *cdkDragPreview>
+            {{item.name}} with {{item.children.length}} child item(s)
+        </div>
+    </div>
+    <ul cdkDropList *ngIf="item.itemType == 'object' || item.itemType == 'array'"
+        class="item-dropzone"
+        [id]="item.uId"
+        [cdkDropListConnectedTo]="connectedDropListsIds"
+        [cdkDropListData]="item"
+        (cdkDropListDropped)="onDragDrop($event)"
+        [cdkDropListEnterPredicate]="canDrop(item.itemType)">
+        <li *ngFor="let subItem of item.children"
+            [ngClass]="subItem.itemType == 'array' ? 'array-ul' : subItem.itemType == 'object' ? 'object-ul' : ''">
+            <list-item [item]="subItem"
+                [parentItem]="item"
+                [connectedDropListsIds]="allDropListsIds"
+                (itemDrop)="onDragDrop($event)"
+                (addItem)="onAddItem($event)"
+                (duplicateItem)="onDuplicateItem($event)"
+                (removeItem)="onRemoveItem($event)">
+            </list-item>
+        </li>
+    </ul>
+</div>
