@@ -55,6 +55,8 @@ export class E005Component implements OnInit {
   }
 
   public onDragDrop(event: CdkDragDrop<Item>) {
+    console.log('event: ', event);
+    console.log('item: ', this.item);
     event.container.element.nativeElement.classList.remove('active');
     if (this.canBeDropped(event)) {
       const movingItem: Item = event.item.data;
