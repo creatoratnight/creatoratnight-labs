@@ -1,5 +1,6 @@
 import { CdkDragDrop, CdkDragEnter, CdkDragExit, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Item } from 'src/app/models/item';
 
 @Component({
@@ -8,50 +9,68 @@ import { Item } from 'src/app/models/item';
   styleUrls: ['./e005.component.scss']
 })
 
-export class E005Component implements OnInit {
+export class E005Component implements OnInit, OnChanges {
 
   public item: Item;
+  public output;
   public get connectedDropListsIds(): string[] {
     // We reverse ids here to respect items nesting hierarchy
     return this.getIdsRecursive(this.item).reverse();
   }
 
   constructor() {
-    this.item = new Item({ name: 'parent-item', itemType: 'object' });
+    this.item = new Item({ name: 'Document definition', itemType: 'object', addChildren: false });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.updateOuputJson();
+  }
+
+  onChange() {
+    this.updateOuputJson();
+    console.log('Hey!')
   }
 
   public ngOnInit() {
     this.item.children.push(new Item({
-      name: 'test1',
+      name: 'properties',
       itemType: 'object',
+      fixed: true,
+      addChildren: true,
       children: [
-        new Item({ name: 'subItem1', itemType: 'string'}),
-        new Item({ name: 'subItem2', itemType: 'number'}),
-        new Item({ name: 'subItem3', itemType: 'array' }),
-        new Item({ name: 'subItem3', itemType: 'boolean' }),
-        new Item({ name: 'subItem3', itemType: 'object', children: [
-          new Item({ name: 'subItem1', itemType: 'string'}),
-          new Item({ name: 'subItem2', itemType: 'number'}),
-          new Item({ name: 'subItem3', itemType: 'array' }),
+        new Item({ name: 'persoonA', itemType: 'object', addChildren: true, children: [
+          new Item({ name: 'contactgegevens', itemType: 'definition', url: 'http://' }),
+        ] }),
+        new Item({ name: 'persoonB', itemType: 'object', addChildren: true, children: [
+          new Item({ name: 'contactgegevens', itemType: 'definition', url: 'http://' }),
+        ] }),
+        new Item({ name: 'externeDefinitie', itemType: 'object', addChildren: true, children: [
+          new Item({ name: '$url', itemType: 'definition', url: 'http://' })
         ] })
       ]
     }));
     this.item.children.push(new Item({
-      name: 'test2', itemType: 'object',
+      name: 'definitions', 
+      itemType: 'object',
+      fixed: true,
+      addChildren: true,
       children: [
-        new Item({ name: 'subItem4', itemType: 'string' }),
-        new Item({ name: 'subItem5', itemType: 'string' }),
-        new Item({
-          name: 'subItem6', itemType: 'object', children: [
-            new Item({ name: 'subItem8a', itemType: 'number' }),
-            new Item({ name: 'subItem8b', itemType: 'number' }),
-            new Item({ name: 'subItem8c', itemType: 'string' })
-          ]
-        })
+        new Item({ name: 'contactgegevens', itemType: 'object', addChildren: true, children: [
+          new Item({ name: 'telefoonnummer', itemType: 'number'}),
+          new Item({ name: 'email', itemType: 'string'}),
+          new Item({ name: 'adres', itemType: 'definition', url: 'http://' }),
+        ] }),
+        new Item({ name: 'adres', itemType: 'object', addChildren: true, children: [
+          new Item({ name: 'straat', itemType: 'string'}),
+          new Item({ name: 'huisnummer', itemType: 'number'}),
+          new Item({ name: 'huisletter', itemType: 'string'}),
+          new Item({ name: 'huisnummerToevoeging', itemType: 'string'}),
+          new Item({ name: 'postcode', itemType: 'string'}),
+          new Item({ name: 'plaats', itemType: 'string'}),
+        ] })
       ]
     }));
-    this.item.children.push(new Item({ name: 'test3', itemType: 'object' }));
-    console.log(this.item);
+    this.updateOuputJson();
   }
 
   public onDragDrop(event: CdkDragDrop<Item>) {
@@ -95,12 +114,14 @@ export class E005Component implements OnInit {
   }
 
   public onAddItem(item) {
-    item.children.push(new Item({ name: 'new-item', itemType: 'object' }))
+    item.children.push(new Item({ name: 'new-item', itemType: 'string', url: 'http://' }))
   }
 
   public onDuplicateItem([parentItem, item]) {
     let newItem = this.makeCopy(item);
     parentItem.children.push(newItem);
+    let new_index = parentItem.children.findIndex((element) => element == item) + 1;
+    this.array_move(parentItem.children, parentItem.children.length - 1 , new_index)
   }
 
   public onRemoveItem([parentItem, item]) {
@@ -111,12 +132,57 @@ export class E005Component implements OnInit {
     }
   }
 
+  public onMoveItemUp([parentItem, item]) {
+    let old_index = parentItem.children.findIndex((element) => element == item);
+    this.array_move(parentItem.children, old_index, old_index - 1);
+  }
+
+  public onMoveItemDown([parentItem, item]) {
+    let old_index = parentItem.children.findIndex((element) => element == item);
+    this.array_move(parentItem.children, old_index, old_index + 1);
+  }
+
   private makeCopy(item) {
-    let newItem = new Item({ name: item.name, itemType: item.itemType });
+    let newItem = new Item({ name: item.name, itemType: item.itemType, fixed: item.fixed, addChildren: item.addChildren });
     item.children.forEach((child) => {
       newItem.children.push(this.makeCopy(child))
     })
+    console.log(this.item);
     return newItem;
+  }
+
+  private array_move(arr, old_index, new_index) {
+    if (new_index >= arr.length) {
+        let k = new_index - arr.length + 1;
+        while (k--) {
+            arr.push(undefined);
+        }
+    }
+    arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+    return arr;
+  };
+
+  private updateOuputJson() {
+    this.output = this.generateOutputJson(this.item);
+  }
+
+  private generateOutputJson(item) {
+    console.log('item: ', item);
+    let json = {};
+    if (item.itemType != 'definition') {
+      json['type'] = item.itemType;
+    }
+    if (item.description != '') {
+      json['description'] = item.description;
+    }
+    if (item.itemType == 'object') {
+      let properties = {};
+      for (let i = 0; i < item.children?.length; i++) {
+        properties[item.children[i].name] = this.generateOutputJson(item.children[i]);
+      } 
+      json['properties'] = properties;
+    }
+    return json;
   }
 
 }

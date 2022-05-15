@@ -5,14 +5,25 @@
     Drag & Drop JSON Schema Editor
 </h3><br/>
 <p>Text</p><br/>
-<div>
-<list-item [item]="item"
-    [connectedDropListsIds]="connectedDropListsIds"
-    (itemDrop)="onDragDrop($event)"
-    (addItem)="onAddItem($event)"
-    (duplicateItem)="onDuplicateItem($event)"
-    (removeItem)="onRemoveItem($event)">
-</list-item>
+<div class="row">
+    <div class="col">
+        <list-item [item]="item"
+            [connectedDropListsIds]="connectedDropListsIds"
+            [definitions]="item.children[1]"
+            (itemDrop)="onDragDrop($event)"
+            (addItem)="onAddItem($event)"
+            (duplicateItem)="onDuplicateItem($event)"
+            (removeItem)="onRemoveItem($event)"
+            (moveItemUp)="onMoveItemUp($event)"
+            (moveItemDown)="onMoveItemDown($event)"
+            (change)="onChange()">
+        </list-item>
+        <br/>
+    </div>
+    <div class="col">
+        <div class="output-wrapper">
+            <pre>{{ output | json }}</pre>
+        </div>        
+    </div>
 </div>
 <br/><br/><br/>
-  

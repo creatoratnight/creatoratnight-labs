@@ -11,13 +11,14 @@ import { E002Component } from './experiments/e002/e002.component';
 import { E003Component } from './experiments/e003/e003.component';
 import { E004Component } from './experiments/e004/e004.component';
 import { E005Component } from './experiments/e005/e005.component';
-import { E006Component } from './experiments/e006/e006.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { ListItemComponent } from './experiments/e005/list-item/list-item.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+
+import { SortablejsModule } from 'ngx-sortablejs';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,6 @@ import { FormsModule } from '@angular/forms';
     E003Component,
     E004Component,
     E005Component,
-    E006Component,
     ListItemComponent
   ],
   imports: [
@@ -40,7 +40,8 @@ import { FormsModule } from '@angular/forms';
     DragDropModule,
     MatFormFieldModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    SortablejsModule.forRoot({ animation: 150 }),
   ],
   providers: [],
   bootstrap: [AppComponent]
