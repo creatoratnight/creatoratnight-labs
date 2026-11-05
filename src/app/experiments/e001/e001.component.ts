@@ -66,7 +66,7 @@ export class E001Component implements OnInit {
           let x = (i * resolution);
           let y = (j * resolution);
           if (grid[i][j] == 1) {
-            p.fill(253, 214, 23);
+            p.fill(255, 205, 69);
             //p.stroke(253, 214, 23);
             p.rect(x, y, resolution, resolution);
           } else if (history[i][j] > 0) {

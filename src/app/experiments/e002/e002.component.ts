@@ -42,7 +42,7 @@ export class E002Component implements OnInit {
     let terrain = [];
     let travel = 0;
 
-    let color = p.color(253, 214, 23);
+    let color = p.color(255, 205, 69);
 
     p.setup = () => {
       p.createCanvas(p.windowWidth-70, p.windowHeight-310, p.WEBGL).parent('002-canvas');

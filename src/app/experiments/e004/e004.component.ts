@@ -100,7 +100,7 @@ export class E004Component implements OnInit {
       for (let i = tree.length - 1; i >= 0; i--) {
         if (!tree[i].finished) {
           tree[i].size = 20;
-          tree[i].color = p.color(13.89, p.random(90, 100), p.random(70, 100));
+          tree[i].color = p.color(12.22, p.random(90, 100), p.random(70, 100));
         }
       }
     }
